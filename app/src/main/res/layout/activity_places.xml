@@ -7,4 +7,8 @@
     android:layout_height="match_parent"
     tools:context="com.example.rahulkapoor.novateguide.activity.PlacesActivity">
 
+    <include
+        layout="@layout/places_appbar"
+        />
+
 </android.support.constraint.ConstraintLayout>
