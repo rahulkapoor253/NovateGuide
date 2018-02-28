@@ -5,10 +5,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.rahulkapoor.novateguide.activity.HomeActivity">
-
-    <include
-        layout="@layout/custom_appbar"
-        />
+    tools:context="com.example.rahulkapoor.novateguide.activity.PlacesActivity">
 
 </android.support.constraint.ConstraintLayout>
