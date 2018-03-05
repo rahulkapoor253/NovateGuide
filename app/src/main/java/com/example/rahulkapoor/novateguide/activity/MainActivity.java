@@ -44,6 +44,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //previously logged in or not;
+        if (!SharedPref.getInstance(getApplicationContext()).read_token(getApplicationContext()).isEmpty()) {
+            //take user to home activity;
+            Intent i = new Intent(MainActivity.this, HomeActivity.class);
+            startActivity(i);
+        }
+
         init();
 
         //facebook sdk init;
@@ -90,6 +97,10 @@ public class MainActivity extends AppCompatActivity {
                     fbUserDetails.getPicture();
                 }
 
+                //save access token;
+                saveToken();
+
+
                 socialData = fbUserDetails;
 
                 //save data to shared pref;
@@ -122,6 +133,13 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+    }
+
+    /**
+     * save access token;
+     */
+    private void saveToken() {
+        SharedPref.getInstance(getApplicationContext()).save_token(facebookToken, getApplicationContext());
     }
 
     @Override

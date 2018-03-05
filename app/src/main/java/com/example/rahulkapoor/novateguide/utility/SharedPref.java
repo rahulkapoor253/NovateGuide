@@ -17,15 +17,51 @@ public class SharedPref {
         return sharedPref;
     }
 
+    /**
+     * extract user email ;
+     *
+     * @param context context;
+     * @return return string;
+     */
     public String read_email(final Context context) {
         SharedPreferences sharedpref = context.getSharedPreferences("novate", Context.MODE_PRIVATE);
         return sharedpref.getString("email", "");
     }
 
+    /**
+     * save email
+     *
+     * @param email   email
+     * @param context context;
+     */
     public void save_email(final String email, final Context context) {
         SharedPreferences sharedpref = context.getSharedPreferences("novate", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedpref.edit();
         editor.putString("email", email);
+        editor.apply();
+    }
+
+    /**
+     * extract user access token ;
+     *
+     * @param context context;
+     * @return return string;
+     */
+    public String read_token(final Context context) {
+        SharedPreferences sharedpref = context.getSharedPreferences("novate", Context.MODE_PRIVATE);
+        return sharedpref.getString("token", "");
+    }
+
+    /**
+     * save user access token
+     *
+     * @param token   token
+     * @param context context;
+     */
+    public void save_token(final String token, final Context context) {
+        SharedPreferences sharedpref = context.getSharedPreferences("novate", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedpref.edit();
+        editor.putString("token", token);
         editor.apply();
     }
 

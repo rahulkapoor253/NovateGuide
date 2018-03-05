@@ -43,6 +43,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
     private TextView tvUsername, tvEmail;
     private static final int REQ_CODE = 1;
     private static final int REQ_LOCATION_CODE = 99;
+    private static  final int MAP_ZOOM = 14;
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
     private GoogleMap mGoogleMap;
@@ -220,7 +221,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         //add marker and move camera;
         currentLocationMarker = mGoogleMap.addMarker(markerOptions);
         mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        mGoogleMap.animateCamera(CameraUpdateFactory.zoomBy(50));
+        mGoogleMap.animateCamera(CameraUpdateFactory.zoomBy(MAP_ZOOM));
 
         if (mGoogleApiClient != null) {
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
