@@ -17,15 +17,14 @@
             />
 
 
-        <FrameLayout
+        <fragment
+            android:id="@+id/maps"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/appbar">
+            android:layout_below="@id/appbar"
 
-            <!-- maps to be added here-->
-
-
-        </FrameLayout>
+            />
 
     </RelativeLayout>
 
