@@ -5,7 +5,7 @@
                 android:background="@color/colorPrimary">
 
     <ImageView
-        android:id="@+id/iv_drawer"
+        android:id="@+id/iv_back"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_marginStart="@dimen/spacing_extra_small"
@@ -16,7 +16,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_marginStart="@dimen/spacing_huge"
-        android:layout_toEndOf="@id/iv_drawer"
+        android:layout_toEndOf="@id/iv_back"
         android:gravity="center_vertical"
         android:text="Places List"
         android:textColor="@color/colorWhite"
