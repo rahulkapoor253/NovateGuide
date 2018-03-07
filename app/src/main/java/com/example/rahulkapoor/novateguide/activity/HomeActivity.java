@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.rahulkapoor.novateguide.R;
+import com.example.rahulkapoor.novateguide.utility.Direction;
 import com.example.rahulkapoor.novateguide.utility.SharedPref;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -35,6 +36,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
+
 public class HomeActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
@@ -43,12 +46,15 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
     private TextView tvUsername, tvEmail;
     private static final int REQ_CODE = 1;
     private static final int REQ_LOCATION_CODE = 99;
-    private static  final int MAP_ZOOM = 14;
+    private static final int MAP_ZOOM = 14;
+    private static final int REQ_CODE_DIRECTION = 2;
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
     private GoogleMap mGoogleMap;
     private Location lastLocation;
     private Marker currentLocationMarker;
+    private Marker destinationMarker;
+    private ArrayList<String> directionList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,8 +90,10 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onClick(final View v) {
                 //take user to places list screen and get the result from it;
 
+                currentLocationSetup();
+
                 Intent i = new Intent(HomeActivity.this, PlacesActivity.class);
-                startActivityForResult(i, REQ_CODE);
+                startActivityForResult(i, REQ_CODE_DIRECTION);
 
             }
         });
@@ -111,17 +119,53 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
      */
     private void currentLocationSetup() {
 
+        //set up the direction arraylist;
+        Direction.getInstance(getApplicationContext()).setDirectionList();
+
+        directionList = Direction.getInstance(getApplicationContext()).getDirectionList();
+
     }
 
     @Override
     protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
-            if (requestCode == REQ_CODE) {
+            if (requestCode == REQ_CODE_DIRECTION) {
                 //perform the necessary option on callback;
+
+                String pos = data.getStringExtra("pos");
+                //set up the marker and polyline;
+                addDestMarker(Integer.parseInt(pos));
 
             }
         }
+    }
+
+    /**
+     * position to fetch lat,lng and add marker;
+     *
+     * @param pos pos;
+     */
+    private void addDestMarker(final int pos) {
+
+        String mLatLng = directionList.get(pos);
+        String[] splitData = mLatLng.split(",");
+        Double latitude = Double.parseDouble(splitData[0]);
+        Double longitude = Double.parseDouble(splitData[1]);
+
+        if (destinationMarker != null) {
+            destinationMarker.remove();
+        }
+        //new current location;
+        LatLng latLng = new LatLng(latitude, longitude);
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.position(latLng);
+        markerOptions.title("Current Location");
+        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+
+        //add marker and move camera;
+        destinationMarker = mGoogleMap.addMarker(markerOptions);
+
     }
 
     /**
@@ -220,8 +264,8 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         //add marker and move camera;
         currentLocationMarker = mGoogleMap.addMarker(markerOptions);
-        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        mGoogleMap.animateCamera(CameraUpdateFactory.zoomBy(MAP_ZOOM));
+        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, MAP_ZOOM));
+        //mGoogleMap.animateCamera(CameraUpdateFactory.zoomBy(MAP_ZOOM));
 
         if (mGoogleApiClient != null) {
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);

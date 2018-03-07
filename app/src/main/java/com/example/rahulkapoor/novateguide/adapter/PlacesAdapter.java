@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.rahulkapoor.novateguide.R;
+import com.example.rahulkapoor.novateguide.interfaces.DirectionCallback;
 
 import java.util.ArrayList;
 
@@ -20,11 +21,13 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.PlaceViewH
 
     private Context mContext;
     private ArrayList<String> placesList = new ArrayList<>();
+    private DirectionCallback directionCallback;
 
-    public PlacesAdapter(final Context context, final ArrayList<String> list) {
+    public PlacesAdapter(final Context context, final ArrayList<String> list, final DirectionCallback callback) {
 
         this.mContext = context;
         this.placesList = list;
+        this.directionCallback = callback;
 
     }
 
@@ -45,6 +48,8 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.PlaceViewH
             @Override
             public void onClick(final View v) {
                 //return the index and string for setting up marker and lat/lng;
+                directionCallback.getPosition(holder.getAdapterPosition());
+
             }
         });
 
