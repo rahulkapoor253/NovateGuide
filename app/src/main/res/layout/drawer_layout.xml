@@ -10,7 +10,8 @@
         android:id="@+id/iv_user"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_medium"
+        android:layout_marginStart="@dimen/spacing_large"
+        android:layout_marginTop="@dimen/spacing_large"
         android:src="@drawable/ic_user"/>
 
 
@@ -19,10 +20,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_medium"
+        android:layout_marginTop="@dimen/spacing_large"
         android:layout_toEndOf="@id/iv_user"
         android:text="Rahul Kapoor"
         android:textColor="@color/colorWhite"
-        android:textSize="16sp"/>
+        android:textSize="20sp"/>
 
     <TextView
         android:id="@+id/tv_email"
@@ -34,8 +36,21 @@
         android:layout_toEndOf="@id/iv_user"
         android:text="rahul253801@gmail.com"
         android:textColor="@color/colorWhite"
-        android:textSize="12sp"/>
+        android:textSize="14sp"/>
 
+
+    <Button
+        android:id="@+id/btn_logout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@color/colorPrimary"
+        android:drawablePadding="-20dp"
+        android:drawableStart="@drawable/ic_logout"
+        android:padding="@dimen/spacing_medium"
+        android:text="Logout"
+        android:textColor="@color/colorWhite"
+        android:textSize="20sp"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -69,10 +84,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_very_large"
+                android:layout_marginTop="@dimen/spacing_medium"
                 android:padding="@dimen/spacing_small"
                 android:text="www.chitkara.edu.in"
                 android:textColor="@color/colorWhite"
-                android:textSize="20sp"/>
+                android:textSize="12sp"/>
 
         </LinearLayout>
 

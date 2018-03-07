@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,6 +43,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private ImageView ivAddMarker, ivDrawer, ivUserImage;
+    private Button btnLogout;
     private DrawerLayout drawerLayout;
     private TextView tvUsername, tvEmail;
     private static final int REQ_CODE = 1;
@@ -97,6 +99,15 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             }
         });
+
+        btnLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                //clear access token and logout;
+                SharedPref.getInstance(getApplicationContext()).save_token(null, getApplicationContext());
+                finish();
+            }
+        });
     }
 
     /**
@@ -133,9 +144,9 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
             if (requestCode == REQ_CODE_DIRECTION) {
                 //perform the necessary option on callback;
 
-                String pos = data.getStringExtra("pos");
+                int pos = data.getIntExtra("pos", 0);
                 //set up the marker and polyline;
-                addDestMarker(Integer.parseInt(pos));
+                addDestMarker(pos);
 
             }
         }
@@ -160,7 +171,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         LatLng latLng = new LatLng(latitude, longitude);
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
-        markerOptions.title("Current Location");
+        markerOptions.title("Destination");
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
 
         //add marker and move camera;
@@ -179,6 +190,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         tvEmail = (TextView) findViewById(R.id.tv_email);
         tvUsername = (TextView) findViewById(R.id.tv_username);
         ivUserImage = (ImageView) findViewById(R.id.iv_user);
+        btnLogout = (Button) findViewById(R.id.btn_logout);
 
         //set email and username;
         tvEmail.setText(SharedPref.getInstance(getApplicationContext()).read_email(getApplicationContext()));
