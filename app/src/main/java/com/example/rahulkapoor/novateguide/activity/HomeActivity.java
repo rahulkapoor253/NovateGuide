@@ -3,6 +3,7 @@ package com.example.rahulkapoor.novateguide.activity;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
@@ -33,9 +34,13 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
 
@@ -54,8 +59,10 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
     private LocationRequest mLocationRequest;
     private GoogleMap mGoogleMap;
     private Location lastLocation;
+    private Polyline polyline;
     private Marker currentLocationMarker;
     private Marker destinationMarker;
+    Circle circle;
     private ArrayList<String> directionList = new ArrayList<>();
 
     @Override
@@ -154,6 +161,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     /**
      * position to fetch lat,lng and add marker;
+     * draw lines b/w both the markers to guide the user;
      *
      * @param pos pos;
      */
@@ -164,8 +172,13 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         Double latitude = Double.parseDouble(splitData[0]);
         Double longitude = Double.parseDouble(splitData[1]);
 
+        //if dest marker is present so is polyline;
+        //also remove the polyline object;
         if (destinationMarker != null) {
             destinationMarker.remove();
+            destinationMarker = null;
+            polyline.remove();
+            polyline = null;
         }
         //new current location;
         LatLng latLng = new LatLng(latitude, longitude);
@@ -176,6 +189,24 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         //add marker and move camera;
         destinationMarker = mGoogleMap.addMarker(markerOptions);
+
+        drawPath();
+
+    }
+
+    /**
+     * draw a polyline between both the markers;
+     */
+    private void drawPath() {
+
+        PolylineOptions polylineOptions = new PolylineOptions()
+                .add(currentLocationMarker.getPosition())
+                .add(destinationMarker.getPosition())
+                .color(Color.RED)
+                .width(2);
+
+        polyline = mGoogleMap.addPolyline(polylineOptions);
+
 
     }
 
@@ -263,8 +294,12 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         Log.i("maps", "on Location Changed");
         lastLocation = location;
 
+        //if we already have a marker then we also have a circle to it;
         if (currentLocationMarker != null) {
             currentLocationMarker.remove();
+            currentLocationMarker = null;
+            circle.remove();
+            circle = null;
         }
 
         //new current location;
@@ -283,6 +318,28 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
         }
 
+        //adding circle to the current location of user;
+
+        circle = getCircle(new LatLng(location.getLatitude(), location.getLongitude()));
+
+    }
+
+    /**
+     * circle around our current location ;
+     *
+     * @param latLng latlng;
+     * @return return circle object;
+     */
+    private Circle getCircle(final LatLng latLng) {
+
+        CircleOptions circleOptions = new CircleOptions()
+                .radius(100)
+                .center(latLng)
+                .fillColor(0xBBDEFB)
+                .strokeColor(Color.CYAN)
+                .strokeWidth(2);
+
+        return mGoogleMap.addCircle(circleOptions);
     }
 
     public boolean checkLocationPermission() {
