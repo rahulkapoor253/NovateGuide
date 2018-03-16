@@ -24,7 +24,8 @@ public class Direction {
      */
     public void setDirectionList() {
 
-        directionList.add("30.515783,76.659078");//gallileo
+        //directionList.add("30.515783,76.659078");//gallileo
+        directionList.add("30.679293,76.725331");
         directionList.add("30.516400,76.659234"); //newton
         directionList.add("30.516211,76.660359");//de-morgan
         directionList.add("30.516167,76.659135");//woods

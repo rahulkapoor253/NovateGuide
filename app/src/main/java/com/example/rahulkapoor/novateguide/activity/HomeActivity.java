@@ -21,6 +21,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.directions.route.AbstractRouting;
+import com.directions.route.Route;
+import com.directions.route.RouteException;
+import com.directions.route.Routing;
+import com.directions.route.RoutingListener;
 import com.example.rahulkapoor.novateguide.R;
 import com.example.rahulkapoor.novateguide.utility.Direction;
 import com.example.rahulkapoor.novateguide.utility.SharedPref;
@@ -43,9 +48,10 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class HomeActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, LocationListener {
+        GoogleApiClient.OnConnectionFailedListener, LocationListener, RoutingListener {
 
     private ImageView ivAddMarker, ivDrawer, ivUserImage;
     private Button btnLogout;
@@ -64,6 +70,10 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Marker destinationMarker;
     Circle circle;
     private ArrayList<String> directionList = new ArrayList<>();
+
+    private List<Polyline> polylines;
+    private static final int[] COLORS = new int[]{R.color.colorAccent};
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -150,11 +160,9 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (resultCode == RESULT_OK) {
             if (requestCode == REQ_CODE_DIRECTION) {
                 //perform the necessary option on callback;
-
                 int pos = data.getIntExtra("pos", 0);
                 //set up the marker and polyline;
                 addDestMarker(pos);
-
             }
         }
     }
@@ -172,13 +180,19 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         Double latitude = Double.parseDouble(splitData[0]);
         Double longitude = Double.parseDouble(splitData[1]);
 
-        //if dest marker is present so is polyline;
-        //also remove the polyline object;
+        //if dest marker is present so is route;
+        //also clear the route list;
         if (destinationMarker != null) {
             destinationMarker.remove();
             destinationMarker = null;
-            polyline.remove();
-            polyline = null;
+
+            for (Polyline line : polylines) {
+                line.remove();
+            }
+            polylines.clear();
+
+//            polyline.remove();
+//            polyline = null;
         }
         //new current location;
         LatLng latLng = new LatLng(latitude, longitude);
@@ -190,22 +204,39 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         //add marker and move camera;
         destinationMarker = mGoogleMap.addMarker(markerOptions);
 
-        drawPath();
+        drawPath(latLng);
+
 
     }
 
     /**
-     * draw a polyline between both the markers;
+     * draw a route between both the markers;
+     *
+     * @param latLng latlng of destination;
      */
-    private void drawPath() {
+    private void drawPath(final LatLng latLng) {
 
-        PolylineOptions polylineOptions = new PolylineOptions()
-                .add(currentLocationMarker.getPosition())
-                .add(destinationMarker.getPosition())
-                .color(Color.RED)
-                .width(2);
+//draw a route by giving start and end latlng;
+        try {
 
-        polyline = mGoogleMap.addPolyline(polylineOptions);
+            Routing routing = new Routing.Builder()
+                    .travelMode(AbstractRouting.TravelMode.WALKING)
+                    .withListener(this)
+                    .alternativeRoutes(false)
+                    .waypoints(new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude()), latLng)
+                    .build();
+            routing.execute();
+        } catch (Exception e) {
+            Log.i("route", e.getMessage() + "");
+        }
+
+//        PolylineOptions polylineOptions = new PolylineOptions()
+//                .add(currentLocationMarker.getPosition())
+//                .add(destinationMarker.getPosition())
+//                .color(Color.RED)
+//                .width(2);
+//
+//        polyline = mGoogleMap.addPolyline(polylineOptions);
 
 
     }
@@ -214,6 +245,9 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
      * init made;
      */
     private void init() {
+
+        //allocating memory to route list;
+        polylines = new ArrayList<>();
 
         ivAddMarker = (ImageView) findViewById(R.id.iv_add_marker);
         ivDrawer = (ImageView) findViewById(R.id.iv_drawer);
@@ -333,7 +367,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Circle getCircle(final LatLng latLng) {
 
         CircleOptions circleOptions = new CircleOptions()
-                .radius(100)
+                .radius(200)
                 .center(latLng)
                 .fillColor(0xBBDEFB)
                 .strokeColor(Color.CYAN)
@@ -377,5 +411,57 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         }
 
+    }
+
+    //------------------------ draw a route between our marker -----------------------------//
+
+    @Override
+    public void onRoutingFailure(final RouteException e) {
+        Log.i("route", "onRoutingFailure");
+//        if (e != null) {
+//            Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+//        } else {
+//            Toast.makeText(this, "Something went wrong, Try again", Toast.LENGTH_SHORT).show();
+//        }
+
+    }
+
+    @Override
+    public void onRoutingStart() {
+        Log.i("route", "onRoutingStart");
+    }
+
+    @Override
+    public void onRoutingSuccess(final ArrayList<Route> route, final int shortestRouteIndex) {
+
+        Log.i("route", "onRoutingSuccess");
+
+        if (polylines.size() > 0) {
+            for (Polyline poly : polylines) {
+                poly.remove();
+            }
+        }
+
+        polylines = new ArrayList<>();
+        //add route(s) to the map.
+        for (int i = 0; i < route.size(); i++) {
+
+            //In case of more than 5 alternative routes
+            int colorIndex = i % COLORS.length;
+
+            PolylineOptions polyOptions = new PolylineOptions();
+            polyOptions.color(getResources().getColor(COLORS[colorIndex]));
+            polyOptions.width(10 + i * 3);
+            polyOptions.addAll(route.get(i).getPoints());
+            Polyline polyline = mGoogleMap.addPolyline(polyOptions);
+            polylines.add(polyline);
+
+            Toast.makeText(getApplicationContext(), "Route " + (i + 1) + ": distance - " + route.get(i).getDistanceValue() + ": duration - " + route.get(i).getDurationValue(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onRoutingCancelled() {
+        Log.i("route", "onRoutingCancelled");
     }
 }
