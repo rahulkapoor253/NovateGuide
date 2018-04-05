@@ -4,8 +4,11 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -50,13 +53,19 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class HomeActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener, RoutingListener {
 
-    private ImageView ivAddMarker, ivDrawer, ivUserImage;
+    private ImageView ivAddMarker, ivDrawer;
+    private CircleImageView ivUserImage;
     private Button btnLogout;
     private DrawerLayout drawerLayout;
     private TextView tvUsername, tvEmail;
@@ -83,11 +92,19 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
             checkLocationPermission();
         }
 
         init();
+
+//carry the task of setting up the user image in drawer using Async task;
+        String imageURL = SharedPref.getInstance(getApplicationContext()).read_picture(getApplicationContext());
+        Log.i("image", imageURL);
+        if (!imageURL.isEmpty()) {
+            new DownLoadImageTask(imageURL, ivUserImage).execute();
+        }
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.maps);
@@ -301,7 +318,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         tvEmail = (TextView) findViewById(R.id.tv_email);
         tvUsername = (TextView) findViewById(R.id.tv_username);
-        ivUserImage = (ImageView) findViewById(R.id.iv_user);
+        ivUserImage = (CircleImageView) findViewById(R.id.iv_user);
         btnLogout = (Button) findViewById(R.id.btn_logout);
 
         //set email and username;
@@ -511,4 +528,44 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onRoutingCancelled() {
         Log.i("route", "onRoutingCancelled");
     }
+
+
+    /**
+     * inner class to download user profile picture in background using Async task;
+     */
+    private class DownLoadImageTask extends AsyncTask<Void, Void, Bitmap> {
+        private CircleImageView imageView;
+        private String url;
+
+        public DownLoadImageTask(String url, CircleImageView imageView) {
+            this.url = url;
+            this.imageView = imageView;
+        }
+
+        @Override
+        protected Bitmap doInBackground(Void... params) {
+            try {
+                URL urlConnection = new URL(url);
+                HttpURLConnection connection = (HttpURLConnection) urlConnection
+                        .openConnection();
+                connection.setDoInput(true);
+                connection.connect();
+                InputStream input = connection.getInputStream();
+                Bitmap myBitmap = BitmapFactory.decodeStream(input);
+                return myBitmap;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+
+        @Override
+        protected void onPostExecute(Bitmap result) {
+            super.onPostExecute(result);
+            imageView.setImageBitmap(result);
+        }
+
+    }
+
 }

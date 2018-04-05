@@ -144,6 +144,7 @@ public class MainActivity extends AppCompatActivity {
                 facebookEmail = fbUserDetails.getEmail();
                 userFirstName = fbUserDetails.getFirstName();
                 userLastName = fbUserDetails.getLastName();
+                userImage = fbUserDetails.getPicture();
                 Log.i("facebook_data", facebookID + ":" + facebookToken + ":" + facebookEmail + ":" + userFirstName + " " + userLastName);
 
                 if ("".equals(fbUserDetails.getPicture())) {
@@ -157,6 +158,7 @@ public class MainActivity extends AppCompatActivity {
                 socialData = fbUserDetails;
 
                 //save data to shared pref;
+                SharedPref.getInstance(getApplicationContext()).save_picture(userImage, MainActivity.this);
                 SharedPref.getInstance(getApplicationContext()).save_email(facebookEmail, MainActivity.this);
                 String resName = "";
                 if (!userFirstName.isEmpty()) {

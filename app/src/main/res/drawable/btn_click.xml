@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:color="#00BCD4" android:state_pressed="true"/>
-    <item android:color="#FFFFFF"/>
+
+    <item android:drawable="@color/colorShadeAccent"
+          android:state_pressed="true"/> <!-- pressed -->
+    <item android:drawable="@android:color/white"/> <!-- default -->
 </selector>
+

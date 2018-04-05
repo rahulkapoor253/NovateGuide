@@ -42,6 +42,30 @@ public class SharedPref {
     }
 
     /**
+     * extract user profile picture ;
+     *
+     * @param context context;
+     * @return return string;
+     */
+    public String read_picture(final Context context) {
+        SharedPreferences sharedpref = context.getSharedPreferences("novate", Context.MODE_PRIVATE);
+        return sharedpref.getString("picture", "");
+    }
+
+    /**
+     * save user profile picture
+     *
+     * @param picture   picture
+     * @param context context;
+     */
+    public void save_picture(final String picture, final Context context) {
+        SharedPreferences sharedpref = context.getSharedPreferences("novate", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedpref.edit();
+        editor.putString("picture", picture);
+        editor.apply();
+    }
+
+    /**
      * extract user access token ;
      *
      * @param context context;

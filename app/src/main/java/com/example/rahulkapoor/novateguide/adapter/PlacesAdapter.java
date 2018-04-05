@@ -5,8 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.Button;
 
 import com.example.rahulkapoor.novateguide.R;
 import com.example.rahulkapoor.novateguide.interfaces.DirectionCallback;
@@ -42,16 +41,15 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.PlaceViewH
     @Override
     public void onBindViewHolder(final PlacesAdapter.PlaceViewHolder holder, final int position) {
 
-        holder.tvPlaceItem.setText(placesList.get(position));
-
-        holder.llItem.setOnClickListener(new View.OnClickListener() {
+        holder.btnPlaceItem.setText(placesList.get(position));
+        holder.btnPlaceItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
                 //return the index and string for setting up marker and lat/lng;
                 directionCallback.getPosition(holder.getAdapterPosition());
-
             }
         });
+
 
     }
 
@@ -64,14 +62,14 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.PlaceViewH
 
     public class PlaceViewHolder extends RecyclerView.ViewHolder {
 
-        private LinearLayout llItem;
-        private TextView tvPlaceItem;
+        //private LinearLayout llItem;
+        private Button btnPlaceItem;
 
         public PlaceViewHolder(final View itemView) {
             super(itemView);
 
-            llItem = (LinearLayout) itemView.findViewById(R.id.ll_item);
-            tvPlaceItem = (TextView) itemView.findViewById(R.id.tv_item_place);
+            //llItem = (LinearLayout) itemView.findViewById(R.id.ll_item);
+            btnPlaceItem = (Button) itemView.findViewById(R.id.btn_item_place);
 
         }
     }

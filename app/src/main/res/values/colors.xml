@@ -12,6 +12,8 @@
     <color name="colorBlack">#000000</color>
 
     <color name="colorPrimaryText">#212121</color>
+    <color name="colorPlaces">#757575</color>
+    <color name="colorShadeAccent">#26C6DA</color>
     <color name="colorSecondaryyText">#757575</color>
 
     <color name="colorDivider">#BDBDBD</color>

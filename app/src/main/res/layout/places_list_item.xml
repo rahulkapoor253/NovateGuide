@@ -4,31 +4,18 @@
               android:layout_height="wrap_content"
               android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/ll_item"
+
+    <Button
+        android:id="@+id/btn_item_place"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_margin="@dimen/spacing_small"
         android:background="@drawable/btn_click"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/tv_item_place"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_margin="@dimen/spacing_small"
-            android:padding="@dimen/spacing_medium"
-            android:text="DUMMY PLACE"
-            android:textColor="@color/colorPrimaryText"
-            android:textSize="18sp"/>
-
-
-    </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/colorDivider"/>
+        android:padding="@dimen/spacing_medium"
+        android:text="DUMMY PLACE"
+        android:textColor="@color/colorPlaces"
+        android:textSize="18sp"/>
 
 
 </LinearLayout>
