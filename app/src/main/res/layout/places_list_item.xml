@@ -8,6 +8,7 @@
         android:id="@+id/ll_item"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:background="@drawable/btn_click"
         android:orientation="vertical">
 
         <TextView

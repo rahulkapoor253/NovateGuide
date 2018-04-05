@@ -54,26 +54,16 @@ public class PlacesActivity extends AppCompatActivity implements DirectionCallba
         placesList.add("Demorgan Block");
         placesList.add("Chitkara Woods");
         placesList.add("Exploretorium");
-
-//        placesList.add("Turing Block");
-//        placesList.add("Indoor Sports");
-//        placesList.add("Teresa Girl Hostel");
-//        placesList.add("Bloom's Building");
-//        placesList.add("Main Ground");
-//        placesList.add("CSHS Park(Gallileo)");
-//        placesList.add("PNB ATM");
-//        placesList.add("Chitkara School Of Planning and Architecture");
-//        placesList.add("Columbus Hostel");
-//        placesList.add("Vasco Da Gama Hostel");
-//        placesList.add("Central Library");
-//        placesList.add("Babbage Block");
-//        placesList.add("Chitkara School Of Hospitality");
-//        placesList.add("Square One Cafeteria");
-//        placesList.add("Hostel Ground");
-//        placesList.add("Pie A Hostel");
-//        placesList.add("Pie B Hostel");
-//        placesList.add("Pie C Hostel");
-//        placesList.add("Tuck Shop");
+        placesList.add("Indoor Sports");
+        placesList.add("PNB ATM");
+        placesList.add("Chitkara School Of Planning and Architecture");
+        placesList.add("Tuck Shop");
+        placesList.add("Square One Cafeteria");
+        placesList.add("Babbage Block");
+        placesList.add("Edison Block");
+        placesList.add("Architecture Block Canteen");
+        placesList.add("Central Library");
+        placesList.add("Turing Block");
 
     }
 
