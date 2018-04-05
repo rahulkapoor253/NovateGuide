@@ -1,6 +1,7 @@
 package com.example.rahulkapoor.novateguide.activity;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -12,9 +13,11 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -121,10 +124,54 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onClick(final View v) {
                 //clear access token and logout;
-                SharedPref.getInstance(getApplicationContext()).save_token(null, getApplicationContext());
-                finish();
+                LayoutInflater inflater = getLayoutInflater();
+                View alertLayout = inflater.inflate(R.layout.dialog_logout, null);
+//                Button btnYes = (Button) alertLayout.findViewById(R.id.btn_yes);
+//                Button btnNo = (Button) alertLayout.findViewById(R.id.btn_no);
+//
+//                btnYes.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(final View v) {
+//                        //clear the token and logout;
+//                        SharedPref.getInstance(getApplicationContext()).save_token(null, getApplicationContext());
+//                        finish();
+//                    }
+//                });
+//
+//                btnNo.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(final View v) {
+//                        //cancel the alert dialog;
+//
+//                    }
+//                });
+
+                AlertDialog.Builder alert = new AlertDialog.Builder(HomeActivity.this);
+                alert.setView(alertLayout);
+                // disallow cancel of AlertDialog on click of back button and outside touch
+                alert.setCancelable(false);
+                alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(final DialogInterface dialog, final int which) {
+                        //clear the token and logout;
+                        SharedPref.getInstance(getApplicationContext()).save_token(null, getApplicationContext());
+                        finish();
+                    }
+                });
+                alert.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(final DialogInterface dialog, final int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+                AlertDialog dialog = alert.create();
+                dialog.show();
+
+
             }
         });
+
     }
 
     /**
